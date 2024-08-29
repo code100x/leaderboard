@@ -61,7 +61,7 @@ export default function Home() {
 
         <Box>
           <Hero />
-          {session &&
+          {!session &&
             <div className="flex justify-center mt-4">
             <Button
               onClick={() => signIn()}
