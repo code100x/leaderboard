@@ -26,12 +26,12 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from ".
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar"
 import Link from "next/link"
 
-export function Component({contributors}) {
+export function Component({ contributors }: { contributors: any[] }) {
 
   // console.log("contributors:", contributors)
 
-  const [search, setSearch] = useState("")
-  const [sort, setSort] = useState({ key: "totalPRs", order: "desc" })
+  const [search, setSearch] = useState<string>("")
+  const [sort, setSort] = useState<{ key: string; order: string }>({ key: "totalPRs", order: "desc" })
   const sortedContributors = useMemo(() => {
     return [...contributors].sort((a, b) => {
       const aValue = a[sort.key];
@@ -43,8 +43,8 @@ export function Component({contributors}) {
     });
   }, [contributors, sort]);
 
-  const handleSearch = (e) => setSearch(e.target.value)
-  const handleSort = (key) => {
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)
+  const handleSort = (key: string) => {
     if (sort.key === key) {
       setSort({ key, order: sort.order === "asc" ? "desc" : "asc" })
     } else {

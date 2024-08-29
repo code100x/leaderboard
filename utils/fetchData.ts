@@ -51,9 +51,9 @@ export async function fetchContributionData(name: string, access_token: string) 
 export async function fetchContributors(contributors: any) {
     // console.log("contributors:", contributors);
     const contributorsData = await Promise.all(
-        contributors.map(async (contributor) => {
+        contributors.map(async (contributor: { username: string; access_token: string }) => {
             const response = await fetchContributionData(contributor.username, contributor.access_token);
-            return { name: contributor.name, ...response }
+            return { ...response }
         })
     );
     return contributorsData;

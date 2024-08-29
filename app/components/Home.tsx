@@ -6,18 +6,10 @@ import { Component } from "./component";
 import { useState, useEffect } from "react";
 import Footer from "./Footer";
 import Hero from "./Hero";
-import Login from "./Login";
 import { fetchUserData } from "@/utils/fetchData";
 import { Button } from "./ui/button";
 import { FaGithub } from "react-icons/fa";
 
-
-export const fetchContributorData = async () => {
-
-  const data = await fetch('/api/getContributorData').then((res) => res.json());
-
-  return data;
-}
 
 export default function Home() {
 
@@ -26,7 +18,7 @@ export default function Home() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await fetchContributorData();
+      const data = await fetch('/api/getContributorData').then((res) => res.json());
       setContributorData(data);
     };
     fetchData();
@@ -38,7 +30,8 @@ export default function Home() {
 
   useEffect(() => {
     if (session) {
-      const auth_token = session.accessToken;
+      //@ts-ignore
+      const auth_token = session.accessToken || "";
       const fetchData = async () => {
         const userData = await fetchUserData(auth_token);
         const username = userData.username;
@@ -68,11 +61,19 @@ export default function Home() {
 
         <Box>
           <Hero />
-          <Login />
-          {!session &&
-            <Button onClick={() => signIn()} className="inline-flex h-10 items-center justify-center rounded-md px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 mt-2">
-              <FaGithub />Connect GitHub
-            </Button>}
+          {session &&
+            <div className="flex justify-center mt-4">
+            <Button
+              onClick={() => signIn()}
+              className="inline-flex w-50 h-10 items-center justify-center rounded-md text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+            >
+              <FaGithub className="mr-1" size="small" />
+              Connect Github
+            </Button>
+          </div>
+          
+          }
+          
           {/* <Button onClick={() => signOut()} className="inline-flex h-10 items-center justify-center rounded-md px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 mt-2">
         <FaGithub />Signout
     </Button> */}

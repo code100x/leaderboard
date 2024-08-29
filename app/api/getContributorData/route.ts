@@ -13,7 +13,7 @@ export const GET = async (req: any, res: any) => {
     }
 }
 
-export const fetchUsers = async () => {
+const fetchUsers = async () => {
 
     let { data: Users, error } = await supabase
         .from('Users')
