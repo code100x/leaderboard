@@ -1,7 +1,4 @@
 'use client'
-import { signIn } from "next-auth/react"
-import { Button } from "grommet"
-import { FaGithub } from "react-icons/fa";
 
 import Link from "next/link"
 

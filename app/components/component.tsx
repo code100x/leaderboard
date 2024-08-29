@@ -33,6 +33,7 @@ export function Component({ contributors }: { contributors: any[] }) {
   const [search, setSearch] = useState<string>("")
   const [sort, setSort] = useState<{ key: string; order: string }>({ key: "totalPRs", order: "desc" })
   const sortedContributors = useMemo(() => {
+    if(contributors.length === 0) return [];
     return [...contributors].sort((a, b) => {
       const aValue = a[sort.key];
       const bValue = b[sort.key];
@@ -52,6 +53,7 @@ export function Component({ contributors }: { contributors: any[] }) {
     }
   }
   const filteredContributors = useMemo(() => {
+    if(contributors.length === 0) return [];
     return sortedContributors.filter(contributor =>
       contributor.username.toLowerCase().includes(search.toLowerCase())
     );
