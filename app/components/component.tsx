@@ -86,9 +86,9 @@ export function Component({ contributors }: { contributors: any[] }) {
                 <span className="ml-1">{sort.order === "asc" ? "\u2191" : "\u2193"}</span>
               )}
             </TableHead>
-            <TableHead className="text-right cursor-pointer" onClick={() => handleSort("issues")}>
-              Issues
-              {sort.key === "issues" && (
+            <TableHead className="text-right cursor-pointer" onClick={() => handleSort("openPRs")}>
+              Open PRs
+              {sort.key === "openPRs" && (
                 <span className="ml-1">{sort.order === "asc" ? "\u2191" : "\u2193"}</span>
               )}
             </TableHead>
@@ -98,9 +98,9 @@ export function Component({ contributors }: { contributors: any[] }) {
                 <span className="ml-1">{sort.order === "asc" ? "\u2191" : "\u2193"}</span>
               )}
             </TableHead>
-            <TableHead className="text-right cursor-pointer" onClick={() => handleSort("openPRs")}>
-              Open PRs
-              {sort.key === "openPRs" && (
+            <TableHead className="text-right cursor-pointer" onClick={() => handleSort("issues")}>
+              Issues
+              {sort.key === "issues" && (
                 <span className="ml-1">{sort.order === "asc" ? "\u2191" : "\u2193"}</span>
               )}
             </TableHead>
@@ -121,9 +121,9 @@ export function Component({ contributors }: { contributors: any[] }) {
                 </Link>
               </TableCell>
               <TableCell className="text-right">{contributor.totalPRs.toLocaleString()}</TableCell>
-              <TableCell className="text-right">{contributor.issues.toLocaleString()}</TableCell>
-              <TableCell className="text-right">{contributor.mergedPRs.toLocaleString()}</TableCell>
               <TableCell className="text-right">{contributor.openPRs.toLocaleString()}</TableCell>
+              <TableCell className="text-right">{contributor.mergedPRs.toLocaleString()}</TableCell>
+              <TableCell className="text-right">{contributor.issues.toLocaleString()}</TableCell>
             </TableRow>
           ))}
         </TableBody>

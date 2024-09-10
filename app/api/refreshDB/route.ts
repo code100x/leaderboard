@@ -1,13 +1,11 @@
 import { fetchContributionData } from "@/utils/fetchData";
 import { supabase } from "@/utils/supabase"
 
-
-
 export const GET = async (req: any, res: any) => {
 
     let contributorsData: { username: string; totalPRs: number; mergedPRs: number; openPRs: number; issues: number; avatar?: string }[] = []
 
-    cron.schedule('* * * * *', async () => {
+    // cron.schedule('* * * * *', async () => {
 
         console.log('')
         console.log('#########################################')
@@ -18,24 +16,49 @@ export const GET = async (req: any, res: any) => {
         console.log('')
         const users = await fetchUsers();
 
-
         const usernames = users?.map((user: any) => user.username) || [];
 
         console.log("usernames:", usernames);
 
         for (let i = 0; i < usernames.length; i++) {
-            contributorsData.push(await fetchContributionData(usernames[i]));
+            const contributionData = await fetchContributionData(usernames[i]);
+            if(!contributionData) continue;
+            // Check if the username already exists in the database
+            const { data: existingUser, error: fetchError } = await supabase
+                .from('contributions')
+                .select('*')
+                .eq('username', contributionData.username)
+            
+                console.log("existingUser:", existingUser, "fetchError:", fetchError);
+
+
+            if (fetchError) {
+                console.error("Fetch error:", fetchError);
+                continue; // Skip to the next username if there's an error
+            }
+
+            if (existingUser.length) {
+                console.log("Update existing user: ", contributionData.username);
+                await supabase
+                    .from('contributions')
+                    .update(contributionData)
+                    .eq('username', contributionData.username);
+            } else {
+
+                console.log("Insert new user: ", contributionData.username);
+                contributorsData.push(contributionData);
+            }
         }
 
         console.log("contributorsData:", contributorsData);
 
+        // Upsert only new contributors
         const updatedContributions = await supabase.from('contributions').upsert(contributorsData);
         if (updatedContributions.error)
             console.error("updatedContributions error:", updatedContributions.error)
-    });
+    // });
     return Response.json(contributorsData);
 }
-
 
 const fetchUsers = async () => {
 

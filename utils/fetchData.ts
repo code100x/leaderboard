@@ -23,21 +23,21 @@ export async function fetchUserData(access_token: string) {
 
 export async function fetchContributionData(username: string) {
     try {
-        
+
 
         // console.log("userHeader:", userHeaders.Authorization, "serverHeader:", serverHeaders.Authorization);
 
-        console.log("username: ",username)
+        console.log("username: ", username)
 
-        
+
 
         const prs = await fetch(`https://api.github.com/search/issues?q=author:${username}%20type:pr`);
         const prData = await prs.json();
 
         // Validation check for PR data
         if (!prData || !prData.items) {
-             console.log("prData:", prData);
-            throw new Error("Invalid PR data received");
+            console.log("prData:", prData);
+            // throw new Error("Invalid PR data received");
         }
 
         const totalPrs = prData.total_count;
@@ -49,7 +49,7 @@ export async function fetchContributionData(username: string) {
 
         // Validation check for issues data
         if (!issues || typeof issues.total_count !== 'number') {
-            throw new Error("Invalid issues data received");
+            console.error("Invalid issues data received");
         }
 
         const issueCount = issues.total_count;
@@ -58,7 +58,7 @@ export async function fetchContributionData(username: string) {
 
     } catch (error) {
         console.error("Error fetching data:", error);
-        throw error;
+        // throw error;
     }
 }
 
