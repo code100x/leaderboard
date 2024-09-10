@@ -3,9 +3,7 @@ import { supabase } from '@/utils/supabase';
 
 export const GET = async (req: any, res: any) => {
     try {
-        const users = await fetchUsers();
-        console.log("users:", users)
-        const data = await fetchContributors(users);
+        const data = await fetchContributions();
         return Response.json(data);
     } catch (error) {
         console.error(error)
@@ -13,41 +11,38 @@ export const GET = async (req: any, res: any) => {
     }
 }
 
+
+async function fetchContributions() {
+
+    let { data, error } = await supabase
+        .from('contributions')
+        .select('*')
+
+    if(error){
+        console.error('error', error);
+        return [];
+        // throw error
+    }
+
+    // data should be { username: username, totalPRs: totalPrs, mergedPRs: mergedPRs, openPRs: openPRs, issues: issueCount, avatar:avatar_url };
+    console.log(data)
+    return data;   
+}
+
 export const POST = async (req: any, res: any) => {
-try {
-    
-    //get access_token from req, validate it and add user to Users table
-    const json = await req.json();
-    let { data: { access_token: access_token } } = json
+    try {
 
-    const { username: username, avatar: avatar } = await fetchUserData(access_token);
+        //get access_token from req, validate it and add user to Users table
+        const json = await req.json();
+        let { data: { access_token: access_token } } = json
 
-    console.log("username:", username, "avatar:", avatar);
+        const { username: username, avatar: avatar }: { username: string; avatar: string } = await fetchUserData(access_token);
 
-    const { data: existingUser, error: fetchError } = await supabase
-        .from('Users')
-        .select()
-        .eq('username', username)
+        console.log("username:", username, "avatar:", avatar);
 
-    console.log("existingUser:", existingUser, "fetchError:", fetchError)
-    // console.log("existingUser:", existingUser, "fetchError:", fetchError)
-
-    if (fetchError) {
-        return Response.json({ error: 'Error checking user' });
-    }
-
-    if (existingUser.length) {
-        if (existingUser[0].access_token == access_token) {
-            return Response.json({ error: "User already exists" });
+        if (!(username && avatar)) {
+            throw Error("Invalid username or avatar");
         }
-        else {
-            // old user, update access token
-
-            const { data, error } = await supabase.from('Users').update({ access_token: access_token }).eq('username', username)
-            return Response.json({ data: "Access token updated successfully" });
-        }
-    }
-    else {
 
         // new user
         // insert into Users table
@@ -55,29 +50,16 @@ try {
         const { data, error } = await supabase
             .from('Users')
             .insert([
-                { username: username, access_token: access_token }
+                { username: username, avatar: avatar }
             ])
             .select()
 
         console.log("data:", data, "error:", error)
         return Response.json({ data: "User added successfully" });
+
+    } catch (error) {
+        console.error(error);
+        return Response.json({ error: 'Internal Server Error' });
     }
 
-} catch (error) {
-    console.error(error);
-    return Response.json({ error: 'Internal Server Error' });
-}
-
-}
-
-const fetchUsers = async () => {
-
-    let { data: Users, error } = await supabase
-        .from('Users')
-        .select('*')
-
-    // console.log("Users:", Users) 
-
-    if (error) { console.log('error', error); throw error }
-    return Users;
 }

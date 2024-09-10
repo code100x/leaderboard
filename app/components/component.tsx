@@ -116,7 +116,7 @@ export function Component({ contributors }: { contributors: any[] }) {
                 </Avatar>
               </TableCell>
               <TableCell className="font-medium">
-                <Link href="#" prefetch={false}>
+                <Link href={`https://github.com/${contributor.username}`} prefetch={false}>
                   {contributor.username}
                 </Link>
               </TableCell>

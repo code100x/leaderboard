@@ -6,7 +6,7 @@ import { Component } from "./component";
 import { useState, useEffect } from "react";
 import Footer from "./Footer";
 import Hero from "./Hero";
-import { fetchUserData } from "@/utils/fetchData";
+
 import { Button } from "./ui/button";
 import { FaGithub } from "react-icons/fa";
 
